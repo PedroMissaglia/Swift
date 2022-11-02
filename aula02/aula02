@@ -1,0 +1,290 @@
+import Foundation
+
+//?,<.>/?:"'""\|\||
+
+//Estruturas de condicao
+
+//If-else
+
+
+//Switch, While, Reapeat While
+let speed: Double = 39.0
+
+switch speed {
+case ..<0.0:
+    print("re")
+case ..<20.0:
+    print("1 marcha")
+case 20.0..<40.0:
+    print("2 marcha")
+case 40.0..<50.0:
+    print("3 marcha")
+case 50.0..<90.0:
+    print("4 marcha")
+default:
+    print("5 marcha")
+}
+
+let letter: String = "k"
+switch letter {
+case "a"..."m":
+    print("1 metade do alfabeto")
+default:
+    print("2 metado do alfabeto")
+}
+
+let names = ["Paula", "Renato", "Pedro", "Joao", "Eric"]
+
+for name in names {
+    print(name)
+}
+
+for number in stride(from: 0, to:100, by:2){
+    print(number)
+}
+
+let states: [String: String] = [
+    "PA": "Para",
+    "AC": "Acre",
+    "PE": "Pernambuco",
+    "RJ": "Rio de Janeiro",
+    "SP": "Sao Paulo"
+]
+
+for (_, name) in states {
+    print(name)
+}
+
+//Enumeradores (enum)
+enum Compass: String {
+    case north = "norte"
+    case south = "sul"
+    case east = "leste"
+    case west = "oeste"
+    //case north, south
+}
+var heading: Compass = .north
+//print("estou indo para o \(heading)")
+
+switch heading {
+case .north:
+    print("estou indo para o norte")
+case .south:
+    print("estou indo para o sul")
+case .east:
+    print("estou indo para o leste")
+case .west:
+    print("estou indo para o oeste")
+}
+
+//valores padroes
+
+enum WeekDay:  String {
+    case sunday = "domingo"
+    case monday = "segunda"
+    case tuesday = "terca"
+    case wednesday = "quarta"
+    case thursday = "quinta"
+    case friday = "sexta"
+    case saturday = "sabado"
+}
+
+let today: WeekDay = .tuesday
+print("hoje e \(today.rawValue)")
+
+if let tomorrow = WeekDay(rawValue: "quarta"){
+    print("Amanha e \(tomorrow.rawValue)")
+}
+
+enum Month: Int {
+    case january = 1, february, march, april, june, july, august, september, october, november, december
+}
+
+let month = Month.november
+print("estamos no \(month.rawValue) mes do ano")
+
+//valores associados
+enum Measure {
+    case weight(Double)
+    case age(Int)
+    case size(widht: Double, height: Double)
+}
+
+let measure: Measure = .size(widht: 30,height: 30)
+switch measure {
+case .weight(let weight):
+    print("e uma medida de peso, e o peso e \(weight)")
+case .age(let age):
+    print("e uma medidade de idade, e a idade e \(age)")
+case .size(let widht, let height):
+    print("e uma medidade de tamanho, e as medidas sao \(widht)x\(height) cm")
+}
+
+//estruturas (struct)
+//sao passadas por valor, n por referencia
+struct Driver {
+    var name: String
+    var license: String
+    var age: Int
+    
+    mutating func changeAge(newAge: Int){
+        age = newAge
+    }
+}
+
+let paula = Driver(name: "Paula", license: "124", age: 27)
+let joao: Driver = .init(name: "joao", license: "3322", age: 22)
+
+var leonardo = paula
+
+leonardo.name = "Leonardo"
+leonardo.license = "29329309"
+
+print(paula.name)
+print(leonardo.name)
+leonardo.changeAge(newAge: 28)
+leonardo.age
+
+var ages = [1 , 5,7,9,12,3,90,45,18,72,15]
+var ages2 = ages
+
+ages.removeFirst()
+
+//funcoes
+pow(2,3)
+sqrt(64)
+
+func doNothing() {}
+
+
+func getTotalMonths() -> Int {
+    return 12
+}
+
+func doubleNumber(number: Int) -> Int {
+    return number * 2
+}
+
+doubleNumber(number: 7)
+
+func sumNumbers(a: Int, b: Int) -> Int{
+    return a + b
+}
+
+let student = "Jaqueline:38"
+
+func getNameAndAge(data: String) -> (name: String, age: Int) {
+    let person = data.components(separatedBy: ":")
+    guard   let name = person.first,
+            let ageString = person.last,
+            let age = Int(ageString) else { return ("", 0) }
+    return (name, age)
+}
+
+let finalStudent = getNameAndAge(data: student)
+
+func say(_ sentence: String, to person: String) {
+    print(sentence, person)
+}
+
+say("Ola", to: "Fernando")
+
+func sum(_ value: Int, with numbers: Int...) -> Int {
+    var result = value
+    for number in numbers {
+        result += number
+    }
+    return result
+}
+
+sum(10, with: 20, 14, 55, 77, 33)
+
+func power(_ number: Double, _ power: Double = 2) -> Double {
+    pow(number, power)
+}
+
+//First class citizen
+//1) atribuido a uma variavel
+//2) utilizando como parametro de uma funcao
+//3) utilizando como retorno de uma funcao
+
+func sum(a: Int, b: Int) -> Int {
+    a + b
+}
+
+func subtract(a: Int, b: Int) -> Int {
+    a - b
+}
+
+func multiply(a: Int, b: Int) -> Int {
+    a * b
+}
+
+func divide(a: Int, b: Int) -> Int {
+    a / b
+}
+
+typealias MathOperation = (Int, Int) -> Int
+
+func calculate(a: Int, b: Int, operation: MathOperation) -> Int {
+    return operation(a,b)
+}
+
+
+calculate(a: 10,b:  30,operation: sum)
+
+func getOperation(named operation: String) -> MathOperation {
+    switch operation {
+    case "soma":
+        return sum
+    case "subtracao":
+        return subtract
+    case "multiplicacao":
+        return multiply
+    default:
+        return divide
+    }
+}
+
+let operation = getOperation(named: "multiplicacao")
+
+operation(12, 14)
+
+//Closures
+
+calculate(a: 15, b: 4, operation: { (divisor: Int, dividend: Int) -> Int in
+    return divisor % dividend
+})
+
+calculate(a: 15, b: 4, operation: { divisor, dividend in
+    return divisor % dividend
+})
+
+calculate(a: 15, b: 4, operation: { divisor, dividend in
+    divisor % dividend
+})
+
+//Trailing sintax
+calculate(a: 15, b: 4) { $0 % $1 }
+
+//High Order Function
+
+let persons = ["Ana", "Paula", "Joaquim", "Jose", "Pedro", "Beatriz"]
+//var uppercasedPersons: [String] = []
+//for person in persons {
+//    uppercasedPersons.append(person.uppercased())
+//}
+//uppercasedPersons
+
+
+let uppercasePersons = persons.map {$0.uppercased()}
+
+
+let max4LenghtPersons = persons.filter {$0.count < 5}
+max4LenghtPersons
+
+let total = persons.reduce(0) {$0 + $1.count}
+
+//Tratamento de Erros
+
+//Generics

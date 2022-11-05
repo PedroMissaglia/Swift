@@ -1,0 +1,259 @@
+import Foundation
+
+enum AccessError: Error {
+    case wrongData
+    case wrongUser
+    case wrongPassword
+}
+
+//Tratamento de erro
+func login(userName: String, password: String) throws -> String {
+    let validUser = "alunoFiap"
+    let validPassword = "abc@123"
+
+    if userName != validUser && password != validPassword {
+        throw AccessError.wrongData
+    }
+    else if userName != validUser {
+         throw AccessError.wrongUser
+    }
+    else if password != validPassword {
+         throw AccessError.wrongPassword
+    }
+    else {
+        return "Usuário logado com sucesso"
+    }
+    
+}
+
+do {
+    try login(userName: "alunofiap", password: "abc@123")
+    print("Não deu erro!")
+} catch {
+    switch error as? AccessError {
+        case .wrongPassword:
+            print("Senha inválida")
+        case .wrongUser:
+            print("Usuário inválido")
+        case .wrongData:
+            print("Dados inválidos")
+        default:
+            print("Erro desconhecido")
+    }
+}
+
+//Generics
+func swapInts(_ a: inout Int, _ b: inout Int) {
+    let tempA = a
+    a = b
+    b = tempA
+}
+
+var x = 10
+var y = 25
+
+swapInts(&x, &y)
+
+
+func swapValues<T: Equatable>(_ a: inout T, _ b: inout T) {
+    let tempA = a
+    a = b
+    b = tempA
+}
+
+var w = "jjj"
+var z = "kkk"
+
+//swapInts(&z, &w)
+
+//Classes e o Objetos
+
+class Person {
+    var name: String
+    var age: Int
+    var friend: Person?
+
+    init(name: String, age: Int) {
+        self.name = name
+        self.age = age
+    }
+
+    deinit {
+        print(name, "foi desalocado da memoria")
+    }
+}
+
+var felipe: Person? = Person(name: "Felipe", age: 23)
+var joao: Person? = Person(name: "Joao", age: 23)
+
+felipe?.friend = joao
+joao?.friend = felipe
+
+//print(felipe.name, joao.name)
+
+//ARC (Automatic Reference Couting)
+felipe = nil
+joao = nil
+
+
+class Vehicle {
+    
+    //Propriedades armazenadas (stored properties)
+    var model: String
+    private var currentSpeed: UInt = 0
+
+    //Propriedades computadas (computed properties)
+    var maxSpeed: UInt {
+        250
+    }
+
+    var speed: UInt {
+        get {
+            currentSpeed
+        }
+        set {
+            currentSpeed = min(newValue, maxSpeed)
+        }
+    }
+
+    //Propriedade de instancia
+    static let speedUnit = "Km/h"
+
+    init(model: String) {
+        self.model = model
+    }
+
+    //Metodo de instancia
+    func describe() -> String {
+        "Veículo : \(model), velocidade atual: \(speed) \(Vehicle.speedUnit)"
+    }
+
+    //metodo de class
+    class func alert() -> String {
+        "Se beber, não dirija"
+    }
+}
+
+var bike = Vehicle(model: "Caloi")
+bike.speed = 100
+bike.describe()
+
+Vehicle.alert()
+
+class Temperature {
+    var celsius: Double = 0
+    
+    var fahrenheit: Double {
+        get {
+            (celsius * 9/5) + 32
+        }
+        set {
+            celsius = (newValue - 32) * 5/9
+        }
+    }
+}
+
+var temperature = Temperature()
+temperature.celsius = 19
+print(temperature.fahrenheit)
+temperature.fahrenheit = 90
+
+//Herança
+
+class Car: Vehicle {
+    var licensePlate: String
+
+    override var maxSpeed: UInt {
+        200
+    }
+
+    subscript(index: Int) -> String {
+        get {
+            let plateArray = Array(licensePlate)
+            return String(plateArray[index])
+        }
+        set {
+            var plateArray = Array(licensePlate)
+            plateArray[index] = Character(newValue)
+            licensePlate = String(plateArray)
+        }
+    }
+
+    //Designated initializer
+    init(model: String, licensePlate: String) {
+        self.licensePlate = licensePlate
+        super.init(model: model)
+    }
+
+    //Convenience initializer
+    convenience init() {
+        self.init(model: "", licensePlate: "")
+    }
+    
+    override func describe() -> String {
+        super.describe() + ", Placa: \(licensePlate)"
+    }
+}
+
+let ferrari = Car(model: "Ferrari", licensePlate: "ABCD-1234")
+
+let car1 = Car()
+
+car1.speed = 210
+print(car1.speed)
+ferrari.describe()
+
+ferrari[2] = "5" 
+
+
+//Extensões
+let name = "Fernando Inacio Almeida Peixoto"
+
+extension String {
+    var initials: String {
+        let array = self.components(separatedBy: " ")
+        let map = array.map {$0.first?.description ?? ""}
+
+        return map.joined()
+    }
+}
+
+print(name.initials)
+
+//Protocolos
+
+protocol MobileDeveloper {
+    func createMobileApp()
+}
+
+struct Student {
+    var name: String
+    var number: String
+
+    func createMobileApp() {
+        print("Estou criando um aplicativo Mobile")
+    } 
+}
+
+
+extension Student: MobileDeveloper {
+    func createMobileApp() {
+        print("Estou criando um app mobile")
+    }
+
+}
+
+var paula = Student(name: "Paula", number: "1234567")
+paula.createMobileApp()
+
+var pedro = Student(name: "Pedro", number: "1234567")
+
+extension Student: Equatable {
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.number == rhs.number
+    }
+}
+
+pedro == paula
+
+//IDE Xcode
